@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Background
   - CharacterArea
+  - Monster
   layers:
   - Default
   - TransparentFX

@@ -4,7 +4,19 @@ using UnityEngine;
 
 public class Reposition : MonoBehaviour
 {
+    private Collider2D collider;
+    private const float randomValue = 3.0f;
+    private const int mapSize = 20;
+
+    private void Awake()
+    {
+        collider = GetComponent<Collider2D>();
+    }
     private void OnTriggerExit2D(Collider2D collision)
+    {
+        CheckCollider(collision);
+    }
+    private void CheckCollider(Collider2D collision)
     {
         if (!collision.CompareTag("CharacterArea"))
             return;
@@ -17,20 +29,25 @@ public class Reposition : MonoBehaviour
 
         Vector2 charDir = GameManager.instance.character.inputVector;
 
-        float dirX = charDir.x < 0 ? -1 : 1;
-        float dirY = charDir.y < 0 ? -1 : 1;
-
         switch (transform.tag)
         {
             case "Background":
                 {
-                    if(diffX > diffY)
+                    if (diffX > diffY)
                     {
-                        transform.Translate(Vector3.right * dirX * 40);
+                        transform.Translate(Vector3.right * charDir.x * mapSize * 2);
                     }
-                    else if(diffX < diffY)
+                    else if (diffX < diffY)
                     {
-                        transform.Translate(Vector3.up * dirY * 40);
+                        transform.Translate(Vector3.up * charDir.y * mapSize * 2);
+                    }
+                    break;
+                }
+            case "Monster":
+                {
+                    if (collider.enabled)
+                    {
+                        transform.Translate(new Vector2(Random.Range(-1 * randomValue , randomValue), Random.Range(-1 * randomValue, randomValue)) + charDir * mapSize); 
                     }
                     break;
                 }

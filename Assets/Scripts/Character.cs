@@ -1,13 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Character : MonoBehaviour
 {
-    public Vector2 inputVector;
+    [HideInInspector] public Vector2 inputVector;
     private float speed = 5.0f;
 
-    private Rigidbody2D rigid;
+    public Rigidbody2D rigid { get; private set; }
     private SpriteRenderer spriteRenderer;
     private Animator animator;
 
