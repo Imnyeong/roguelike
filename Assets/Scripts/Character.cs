@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Character : MonoBehaviour
 {
-    private Vector2 inputVector;
+    public Vector2 inputVector;
     private float speed = 5.0f;
 
     private Rigidbody2D rigid;
