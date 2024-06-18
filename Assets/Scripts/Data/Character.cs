@@ -4,10 +4,11 @@ public class Character : MonoBehaviour
 {
     [HideInInspector] public Vector2 inputVector;
     private float speed = 5.0f;
-
+    
     public Rigidbody2D rigid { get; private set; }
     private SpriteRenderer spriteRenderer;
     private Animator animator;
+    public TargetTracker tracker { get; private set; }
 
     #region Unity Life Cycle
     private void Awake()
@@ -34,6 +35,7 @@ public class Character : MonoBehaviour
         rigid = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
+        tracker = GetComponent<TargetTracker>();
     }
     private void CheckInput()
     {

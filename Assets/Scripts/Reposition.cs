@@ -1,10 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Reposition : MonoBehaviour
 {
     private Collider2D collider;
+
     private const float randomValue = 3.0f;
     private const int mapSize = 20;
 
@@ -18,7 +17,7 @@ public class Reposition : MonoBehaviour
     }
     private void CheckCollider(Collider2D collision)
     {
-        if (!collision.CompareTag("CharacterArea"))
+        if (!collision.CompareTag("RepositionRange"))
             return;
 
         Vector2 charPos = GameManager.instance.character.transform.position;

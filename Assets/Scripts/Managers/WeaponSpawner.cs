@@ -4,24 +4,34 @@ using UnityEngine;
 
 public class WeaponSpawner : MonoBehaviour
 {
-    private int id = 0;
-    private int weaponId = 1;
-    private float damage = 10;
-    private int count = 3;
+    [SerializeField] private int id;
+    [SerializeField] private int weaponId;
+    [SerializeField] private float damage;
+    [SerializeField] private int count;
     private float speed;
-
+    private float timer = 0.0f;
     private const int circle = 360;
     private const float upValue = 1.5f;
+    private Character character;
 
+    #region Unity Life Cycle
+    private void Awake()
+    {
+        SetCharacter();
+    }
     private void Start()
     {
         Init();
     }
-    private void Update()
+    private void FixedUpdate()
     {
         ActionWeapon();
     }
-
+    #endregion
+    private void SetCharacter()
+    {
+        character = GetComponentInParent<Character>();
+    }
     private void Init()
     {
         switch(id)
@@ -30,6 +40,11 @@ public class WeaponSpawner : MonoBehaviour
                 {
                     speed = 150;
                     SetWeapon();
+                    break;
+                }
+            default :
+                {
+                    speed = 1.0f;
                     break;
                 }
         }
@@ -55,8 +70,7 @@ public class WeaponSpawner : MonoBehaviour
             Vector3 rotate = Vector3.forward * circle * index / count;
             weapon.Rotate(rotate);
             weapon.Translate(weapon.up * upValue, Space.World);
-
-            weapon.GetComponent<Weapon>().Init(damage, -1);
+            weapon.GetComponent<Weapon>().Init(damage, -1, Vector2.zero);
         }
     }
 
@@ -66,12 +80,34 @@ public class WeaponSpawner : MonoBehaviour
         {
             case 0:
                 {
-                    transform.Rotate(Vector3.back * speed * Time.deltaTime);
+                    transform.Rotate(Vector3.back * speed * Time.fixedDeltaTime);
+                    break;
+                }
+            default:
+                {
+                    timer += Time.deltaTime;
+                    if (timer > speed)
+                    {
+                        Fire();
+                        timer = 0.0f;
+                    }
                     break;
                 }
         }
     }
+    private void Fire()
+    {
+        if (character.tracker.currentTarget == null)
+            return;
 
+        Vector3 targetPos = character.tracker.currentTarget.position;
+        Vector3 direction = (targetPos - transform.position).normalized;
+
+        Transform bullet = GameManager.instance.objectPool.Get(weaponId).transform;
+        bullet.position = transform.position;
+        bullet.rotation = Quaternion.FromToRotation(Vector3.up, direction);
+        bullet.GetComponent<Weapon>().Init(damage, count, direction);
+    }
     public void UpgradeWeapon(float _damage, int _count)
     {
         damage = _damage;

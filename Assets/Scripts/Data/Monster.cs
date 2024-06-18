@@ -70,4 +70,24 @@ public class Monster : MonoBehaviour
     {
         spriteRenderer.flipX = target.position.x < rigid.position.x;
     }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (!collision.CompareTag("Weapon"))
+            return;
+
+        hp -= collision.GetComponent<Weapon>().damage;
+
+        if(hp > 0)
+        {
+            
+        }
+        else
+        {
+            Dead();
+        }
+    }
+    private void Dead()
+    {
+        this.gameObject.SetActive(false);
+    }
 }

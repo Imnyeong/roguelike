@@ -5,8 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Background
-  - CharacterArea
+  - RepositionRange
   - Monster
+  - Weapon
   layers:
   - Default
   - TransparentFX
@@ -14,7 +15,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - Monster
   - 
   - 
   - 
