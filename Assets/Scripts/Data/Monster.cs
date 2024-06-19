@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class Monster : MonoBehaviour
@@ -7,14 +8,16 @@ public class Monster : MonoBehaviour
     private float maxHp;
 
     private bool isLive = false;
-
     [SerializeField] private RuntimeAnimatorController[] animators;
     private Rigidbody2D rigid;
     private SpriteRenderer spriteRenderer;
 
     private Animator animator;
     private Rigidbody2D target;
+    private Collider2D collider;
 
+    private WaitForFixedUpdate waitTime;
+    private const float knockbackPower = 0.5f;
     #region Unity Life Cycle
     private void Awake()
     {
@@ -26,7 +29,7 @@ public class Monster : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        if (!isLive)
+        if (!isLive || animator.GetCurrentAnimatorStateInfo(0).IsName("Hit"))
             return;
 
         Move();
@@ -42,14 +45,20 @@ public class Monster : MonoBehaviour
     private void Init()
     {
         rigid = GetComponent<Rigidbody2D>();
+        collider = GetComponent<Collider2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
+        waitTime = new WaitForFixedUpdate();
     }
     private void SetStatus()
     {
-        target = GameManager.instance.character.rigid;
         isLive = true;
+        target = GameManager.instance.character.rigid;
         hp = maxHp;
+        collider.enabled = isLive;
+        rigid.simulated = isLive;
+        animator.SetBool("Dead", !isLive);
+        spriteRenderer.sortingOrder = 2;
     }
     public void SetData(MonsterData _data)
     {
@@ -62,6 +71,7 @@ public class Monster : MonoBehaviour
     {
         Vector2 direction = target.position - rigid.position;
         Vector2 moveVector = direction.normalized * speed * Time.fixedDeltaTime;
+
         rigid.MovePosition(rigid.position + moveVector);
         rigid.velocity = Vector2.zero;
     }
@@ -77,16 +87,35 @@ public class Monster : MonoBehaviour
 
         hp -= collision.GetComponent<Weapon>().damage;
 
-        if(hp > 0)
+        StartCoroutine(KnockBack());
+
+        if (hp > 0)
         {
-            
+            animator.SetTrigger("Hit");
         }
         else
         {
             Dead();
         }
     }
+
+    private IEnumerator KnockBack()
+    {
+        yield return waitTime;
+        Vector3 charPos = GameManager.instance.character.transform.position;
+        Vector3 direction = transform.position - charPos;
+        rigid.AddForce(direction.normalized * knockbackPower, ForceMode2D.Impulse);
+    }
     private void Dead()
+    {
+        isLive = false;
+        collider.enabled = isLive;
+        rigid.simulated = isLive;
+        spriteRenderer.sortingOrder = 1;
+        animator.SetBool("Dead", !isLive);
+    }
+
+    private void ActiveFalse()
     {
         this.gameObject.SetActive(false);
     }

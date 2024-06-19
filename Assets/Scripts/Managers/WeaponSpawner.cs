@@ -17,22 +17,22 @@ public class WeaponSpawner : MonoBehaviour
     #region Unity Life Cycle
     private void Awake()
     {
-        SetCharacter();
+        Init();
     }
     private void Start()
     {
-        Init();
+        SetData();
     }
     private void FixedUpdate()
     {
         ActionWeapon();
     }
     #endregion
-    private void SetCharacter()
+    private void Init()
     {
         character = GetComponentInParent<Character>();
     }
-    private void Init()
+    private void SetData()
     {
         switch(id)
         {
@@ -70,7 +70,7 @@ public class WeaponSpawner : MonoBehaviour
             Vector3 rotate = Vector3.forward * circle * index / count;
             weapon.Rotate(rotate);
             weapon.Translate(weapon.up * upValue, Space.World);
-            weapon.GetComponent<Weapon>().Init(damage, -1, Vector2.zero);
+            weapon.GetComponent<Weapon>().SetWeapon(damage, -1, Vector2.zero);
         }
     }
 
@@ -106,7 +106,7 @@ public class WeaponSpawner : MonoBehaviour
         Transform bullet = GameManager.instance.objectPool.Get(weaponId).transform;
         bullet.position = transform.position;
         bullet.rotation = Quaternion.FromToRotation(Vector3.up, direction);
-        bullet.GetComponent<Weapon>().Init(damage, count, direction);
+        bullet.GetComponent<Weapon>().SetWeapon(damage, count, direction);
     }
     public void UpgradeWeapon(float _damage, int _count)
     {

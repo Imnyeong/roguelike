@@ -6,18 +6,22 @@ public class Weapon : MonoBehaviour
     public int penetrate { get; private set; }
     private Rigidbody2D rigid;
     [SerializeField] private float speed = 5.0f;
-
+    private float maxDistance = 100.0f;
     #region Unity Life Cycle
     private void Awake()
     {
         Init();
+    }
+    private void FixedUpdate()
+    {
+        CheckDistance();
     }
     #endregion
     private void Init()
     {
         rigid = GetComponent<Rigidbody2D>();
     }
-    public void Init(float _damage, int _penetrate, Vector2 _direction)
+    public void SetWeapon(float _damage, int _penetrate, Vector2 _direction)
     {
         this.damage = _damage;
         this.penetrate = _penetrate;
@@ -27,7 +31,17 @@ public class Weapon : MonoBehaviour
             rigid.velocity = _direction * speed;
         }
     }
+    private void CheckDistance()
+    {
+        Vector3 charPos = GameManager.instance.character.transform.position;
+        float distance = Vector3.Distance(charPos, this.transform.position);
 
+        if(distance > maxDistance)
+        {
+            rigid.velocity = Vector2.zero;
+            gameObject.SetActive(false);
+        }
+    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (!collision.CompareTag("Monster") || penetrate == -1)
