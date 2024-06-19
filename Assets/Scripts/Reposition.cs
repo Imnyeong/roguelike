@@ -5,7 +5,7 @@ public class Reposition : MonoBehaviour
     private Collider2D collider;
 
     private const float randomValue = 3.0f;
-    private const int mapSize = 20;
+    private const int mapSize = 30;
 
     private void Awake()
     {
