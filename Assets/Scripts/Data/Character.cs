@@ -50,7 +50,7 @@ public class Character : MonoBehaviour
     }
     private void ChaeckAnimation()
     {
-        animator.SetBool("Move", inputVector.magnitude != 0);
+        animator.SetBool(StringData.AnimationMove, inputVector.magnitude != 0);
     }
     private void Move()
     {

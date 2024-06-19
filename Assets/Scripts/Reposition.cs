@@ -17,7 +17,7 @@ public class Reposition : MonoBehaviour
     }
     private void CheckCollider(Collider2D collision)
     {
-        if (!collision.CompareTag("RepositionRange"))
+        if (!collision.CompareTag(StringData.TagReposRange))
             return;
 
         Vector2 charPos = GameManager.instance.character.transform.position;
@@ -28,28 +28,23 @@ public class Reposition : MonoBehaviour
 
         Vector2 charDir = GameManager.instance.character.inputVector;
 
-        switch (transform.tag)
+        if(transform.tag == StringData.TagBackground)
         {
-            case "Background":
-                {
-                    if (diffX > diffY)
-                    {
-                        transform.Translate(Vector3.right * charDir.x * mapSize * 2);
-                    }
-                    else if (diffX < diffY)
-                    {
-                        transform.Translate(Vector3.up * charDir.y * mapSize * 2);
-                    }
-                    break;
-                }
-            case "Monster":
-                {
-                    if (collider.enabled)
-                    {
-                        transform.Translate(new Vector2(Random.Range(-1 * randomValue , randomValue), Random.Range(-1 * randomValue, randomValue)) + charDir * mapSize); 
-                    }
-                    break;
-                }
+            if (diffX > diffY)
+            {
+                transform.Translate(Vector3.right * charDir.x * mapSize * 2);
+            }
+            else if (diffX < diffY)
+            {
+                transform.Translate(Vector3.up * charDir.y * mapSize * 2);
+            }
+        }
+        else if(transform.tag == StringData.TagMonster)
+        {
+            if (collider.enabled)
+            {
+                transform.Translate(new Vector2(Random.Range(-1 * randomValue, randomValue), Random.Range(-1 * randomValue, randomValue)) + charDir * mapSize);
+            }
         }
     }
 }

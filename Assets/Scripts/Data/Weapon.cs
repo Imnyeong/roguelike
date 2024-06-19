@@ -44,7 +44,7 @@ public class Weapon : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!collision.CompareTag("Monster") || penetrate == -1)
+        if (!collision.CompareTag(StringData.TagMonster) || penetrate == -1)
             return;
 
         penetrate--;

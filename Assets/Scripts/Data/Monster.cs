@@ -29,7 +29,7 @@ public class Monster : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        if (!isLive || animator.GetCurrentAnimatorStateInfo(0).IsName("Hit"))
+        if (!isLive || animator.GetCurrentAnimatorStateInfo(0).IsName(StringData.AnimationHit))
             return;
 
         Move();
@@ -57,7 +57,7 @@ public class Monster : MonoBehaviour
         hp = maxHp;
         collider.enabled = isLive;
         rigid.simulated = isLive;
-        animator.SetBool("Dead", !isLive);
+        animator.SetBool(StringData.AnimationDead, !isLive);
         spriteRenderer.sortingOrder = 2;
     }
     public void SetData(MonsterData _data)
@@ -82,7 +82,7 @@ public class Monster : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!collision.CompareTag("Weapon"))
+        if (!collision.CompareTag(StringData.TagWeapon))
             return;
 
         hp -= collision.GetComponent<Weapon>().damage;
@@ -91,7 +91,7 @@ public class Monster : MonoBehaviour
 
         if (hp > 0)
         {
-            animator.SetTrigger("Hit");
+            animator.SetTrigger(StringData.AnimationHit);
         }
         else
         {
@@ -112,7 +112,7 @@ public class Monster : MonoBehaviour
         collider.enabled = isLive;
         rigid.simulated = isLive;
         spriteRenderer.sortingOrder = 1;
-        animator.SetBool("Dead", !isLive);
+        animator.SetBool(StringData.AnimationDead, !isLive);
     }
 
     private void ActiveFalse()
