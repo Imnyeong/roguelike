@@ -6,6 +6,8 @@ public class Monster : MonoBehaviour
     private float speed;
     private float hp;
     private float maxHp;
+    public int damage { get; private set; }
+
     private int rewardExp;
     private int rewardCoin;
 
@@ -70,6 +72,7 @@ public class Monster : MonoBehaviour
         animator.runtimeAnimatorController = _data.animator;
         speed = _data.speed;
         maxHp = _data.maxHp;
+        damage = _data.damage;
         rewardExp = _data.rewardExp;
         rewardCoin = _data.rewardCoin;
 
@@ -137,6 +140,5 @@ public class Monster : MonoBehaviour
     private void ActiveFalse()
     {
         this.gameObject.SetActive(false);
-
     }
 }

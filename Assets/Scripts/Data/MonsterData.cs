@@ -6,6 +6,8 @@ public class MonsterData : ScriptableObject
 {
     public float maxHp;
     public float speed;
+    public int damage;
+
     public int rewardExp;
     public int rewardCoin;
 

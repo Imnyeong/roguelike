@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class Character : MonoBehaviour
@@ -11,6 +12,9 @@ public class Character : MonoBehaviour
     private int level = 1;
     private float exp = 0.0f;
     private float maxExp;
+
+    private bool canHit = true;
+    private WaitForSecondsRealtime hitTime;
     public Rigidbody2D rigid { get; private set; }
     private SpriteRenderer spriteRenderer;
     private Animator animator;
@@ -43,6 +47,7 @@ public class Character : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
         tracker = GetComponent<TargetTracker>();
+        hitTime = new WaitForSecondsRealtime(2.0f);
     }
     public void SetData(int _characterId)
     {
@@ -112,4 +117,44 @@ public class Character : MonoBehaviour
     {
         return exp / maxExp;
     }
+
+    private void OnCollisionStay2D(Collision2D _collision)
+    {
+        if (!canHit)
+            return;
+
+        Hit(_collision.gameObject.GetComponent<Monster>().damage);
+    }
+
+    private void Hit(int _damage)
+    {
+        hp -= _damage;
+        UIManager.instance.UpdateHp();
+        StartCoroutine(HitCoroutine());
+
+        if (hp > 0)
+        {
+            animator.SetTrigger(StringData.AnimationHit);
+        }
+        else
+        {
+            Dead();
+        }
+    }
+
+    private IEnumerator HitCoroutine()
+    {
+        canHit = false;
+        yield return hitTime;
+        canHit = true;
+    }
+    private void Dead()
+    {
+        animator.SetTrigger(StringData.AnimationDead);
+    }
+    private void CallGameOver()
+    {
+        GameManager.instance.StopGame();
+    }
+
 }
