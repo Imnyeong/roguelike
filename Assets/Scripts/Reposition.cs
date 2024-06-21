@@ -2,48 +2,53 @@ using UnityEngine;
 
 public class Reposition : MonoBehaviour
 {
-    private Collider2D collider;
+    private Collider2D collision;
 
     private const float randomValue = 3.0f;
     private const int mapSize = 30;
 
     private void Awake()
     {
-        collider = GetComponent<Collider2D>();
+        collision = GetComponent<Collider2D>();
     }
-    private void OnTriggerExit2D(Collider2D collision)
+    private void OnTriggerExit2D(Collider2D _collision)
     {
-        CheckCollider(collision);
+        CheckCollider(_collision);
     }
-    private void CheckCollider(Collider2D collision)
+    private void CheckCollider(Collider2D _collision)
     {
-        if (!collision.CompareTag(StringData.TagReposRange))
+        if (!_collision.CompareTag(StringData.TagReposRange))
             return;
 
         Vector2 charPos = GameManager.instance.character.transform.position;
         Vector2 objPos = transform.position;
 
-        float diffX = Mathf.Abs(charPos.x - objPos.x);
-        float diffY = Mathf.Abs(charPos.y - objPos.y);
+        float diffX = charPos.x - objPos.x;
+        float diffY = charPos.y - objPos.y;
 
-        Vector2 charDir = GameManager.instance.character.inputVector;
+        float dirX = diffX < 0 ? -1 : 1;
+        float dirY = diffY < 0 ? -1 : 1;
 
-        if(transform.tag == StringData.TagBackground)
+        diffX = Mathf.Abs(diffX);
+        diffY = Mathf.Abs(diffY);
+
+        if (transform.tag == StringData.TagBackground)
         {
             if (diffX > diffY)
             {
-                transform.Translate(Vector3.right * charDir.x * mapSize * 2);
+                transform.Translate(Vector3.right * dirX * mapSize * 2);
             }
             else if (diffX < diffY)
             {
-                transform.Translate(Vector3.up * charDir.y * mapSize * 2);
+                transform.Translate(Vector3.up * dirY * mapSize * 2);
             }
         }
         else if(transform.tag == StringData.TagMonster)
         {
-            if (collider.enabled)
+            if (collision.enabled)
             {
-                transform.Translate(new Vector2(Random.Range(-1 * randomValue, randomValue), Random.Range(-1 * randomValue, randomValue)) + charDir * mapSize);
+                Vector2 distance = charPos - objPos;
+                transform.Translate((distance * 2) + new Vector2(Random.Range(-1 * randomValue, randomValue), Random.Range(-1 * randomValue, randomValue)));
             }
         }
     }

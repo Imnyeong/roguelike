@@ -3,9 +3,7 @@ using UnityEngine;
 public class TargetTracker : MonoBehaviour
 {
     [SerializeField] private float trackRange;
-
     [SerializeField] private LayerMask targetLayer;
-    private RaycastHit2D[] targets;
     public Transform currentTarget { get; private set; }
 
     #region Unity Life Cycle
@@ -16,15 +14,12 @@ public class TargetTracker : MonoBehaviour
     #endregion
     private void FindTarget()
     {
-        FindAllTargets();
         currentTarget = GetTarget();
-    }
-    private void FindAllTargets()
-    {
-        targets = Physics2D.CircleCastAll(transform.position, trackRange, Vector2.zero, 0, targetLayer);
     }
     private Transform GetTarget()
     {
+        RaycastHit2D[] targets = Physics2D.CircleCastAll(transform.position, trackRange, Vector2.zero, 0, targetLayer);
+
         Transform target = null;
         float minDistance = float.MaxValue;
 

@@ -1,11 +1,4 @@
-[System.Serializable]
-public class MonsterData
-{
-    public float spawnDelay;
-    public int spriteType;
-    public int hp;
-    public float speed;
-}
+using UnityEngine;
 
 public static class StringData
 {
@@ -18,5 +11,13 @@ public static class StringData
     public static string TagReposRange = "RepositionRange";
     public static string TagWeapon = "Weapon";
     public static string TagMonster = "Monster";
-    // Layer
+    // Resource Path
+    public static string pathWeaponData = "WeaponData";
+    public static string pathCharacterData = "CharacterData";
+    public static string pathMonsterData = "MonsterData";
+}
+public enum WeaponType
+{
+    Spin,
+    Shoot
 }

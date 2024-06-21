@@ -1,27 +1,25 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class WeaponSpawner : MonoBehaviour
 {
-    [SerializeField] private int id;
-    [SerializeField] private int weaponId;
-    [SerializeField] private float damage;
-    [SerializeField] private int count;
+    private WeaponType weaponType;
+    private int weaponId;
+    private float damage;
+    private int count;
     private float speed;
+
     private float timer = 0.0f;
+
     private const int circle = 360;
     private const float upValue = 1.5f;
+    private const float spinPosition= 0.5f;
+
     private Character character;
 
     #region Unity Life Cycle
     private void Awake()
     {
         Init();
-    }
-    private void Start()
-    {
-        SetData();
     }
     private void FixedUpdate()
     {
@@ -32,19 +30,25 @@ public class WeaponSpawner : MonoBehaviour
     {
         character = GetComponentInParent<Character>();
     }
-    private void SetData()
+    public void SetData(WeaponData _data)
     {
-        switch(id)
+        gameObject.name = _data.name;
+        weaponType = _data.weaponType;
+        weaponId = _data.weaponId;
+        damage = _data.damage;
+        count = _data.count;
+        speed = _data.speed;
+
+        switch (weaponType)
         {
-            case 0:
+            case WeaponType.Spin:
                 {
-                    speed = 150;
+                    transform.Translate(this.transform.up * spinPosition, Space.World);
                     SetWeapon();
                     break;
                 }
-            default :
+            case WeaponType.Shoot:
                 {
-                    speed = 1.0f;
                     break;
                 }
         }
@@ -61,7 +65,7 @@ public class WeaponSpawner : MonoBehaviour
             }
             else
             {
-                weapon = GameManager.instance.objectPool.Get(weaponId).transform;
+                weapon = GameManager.instance.objectPool.GetWeapon(weaponId).transform;
                 weapon.parent = this.transform;
             }
             weapon.localPosition = Vector3.zero;
@@ -70,20 +74,20 @@ public class WeaponSpawner : MonoBehaviour
             Vector3 rotate = Vector3.forward * circle * index / count;
             weapon.Rotate(rotate);
             weapon.Translate(weapon.up * upValue, Space.World);
-            weapon.GetComponent<Weapon>().SetWeapon(damage, -1, Vector2.zero);
+            weapon.GetComponent<Weapon>().SetWeapon(damage, weaponType, Vector2.zero);
         }
     }
 
     private void ActionWeapon()
     {
-        switch (id)
+        switch (weaponType)
         {
-            case 0:
+            case WeaponType.Spin:
                 {
                     transform.Rotate(Vector3.back * speed * Time.fixedDeltaTime);
                     break;
                 }
-            default:
+            case WeaponType.Shoot:
                 {
                     timer += Time.deltaTime;
                     if (timer > speed)
@@ -103,17 +107,17 @@ public class WeaponSpawner : MonoBehaviour
         Vector3 targetPos = character.tracker.currentTarget.position;
         Vector3 direction = (targetPos - transform.position).normalized;
 
-        Transform bullet = GameManager.instance.objectPool.Get(weaponId).transform;
+        Transform bullet = GameManager.instance.objectPool.GetWeapon(weaponId).transform;
         bullet.position = transform.position;
         bullet.rotation = Quaternion.FromToRotation(Vector3.up, direction);
-        bullet.GetComponent<Weapon>().SetWeapon(damage, count, direction);
+        bullet.GetComponent<Weapon>().SetWeapon(damage, weaponType, direction, count, speed);
     }
     public void UpgradeWeapon(float _damage, int _count)
     {
-        damage = _damage;
+        damage += _damage;
         count += _count;
 
-        if(id == 0)
+        if(weaponType == WeaponType.Spin)
         {
             SetWeapon();
         }

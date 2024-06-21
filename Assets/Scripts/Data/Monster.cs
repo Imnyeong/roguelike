@@ -6,6 +6,8 @@ public class Monster : MonoBehaviour
     private float speed;
     private float hp;
     private float maxHp;
+    private int rewardExp;
+    private int rewardCoin;
 
     private bool isLive = false;
     [SerializeField] private RuntimeAnimatorController[] animators;
@@ -14,7 +16,7 @@ public class Monster : MonoBehaviour
 
     private Animator animator;
     private Rigidbody2D target;
-    private Collider2D collider;
+    private Collider2D collision;
 
     private WaitForFixedUpdate waitTime;
     private const float knockbackPower = 0.5f;
@@ -36,6 +38,8 @@ public class Monster : MonoBehaviour
     }
     private void LateUpdate()
     {
+        RemoveVelocity();
+
         if (!isLive)
             return;
 
@@ -45,7 +49,7 @@ public class Monster : MonoBehaviour
     private void Init()
     {
         rigid = GetComponent<Rigidbody2D>();
-        collider = GetComponent<Collider2D>();
+        collision = GetComponent<Collider2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
         waitTime = new WaitForFixedUpdate();
@@ -55,17 +59,21 @@ public class Monster : MonoBehaviour
         isLive = true;
         target = GameManager.instance.character.rigid;
         hp = maxHp;
-        collider.enabled = isLive;
+        collision.enabled = isLive;
         rigid.simulated = isLive;
         animator.SetBool(StringData.AnimationDead, !isLive);
-        spriteRenderer.sortingOrder = 2;
+        ChangeSortingOrder();
     }
     public void SetData(MonsterData _data)
     {
-        animator.runtimeAnimatorController = animators[_data.spriteType];
+        spriteRenderer.sprite = _data.sprite;
+        animator.runtimeAnimatorController = _data.animator;
         speed = _data.speed;
-        maxHp = _data.hp;
-        hp = _data.hp;
+        maxHp = _data.maxHp;
+        rewardExp = _data.rewardExp;
+        rewardCoin = _data.rewardCoin;
+
+        hp = maxHp;
     }
     private void Move()
     {
@@ -73,19 +81,26 @@ public class Monster : MonoBehaviour
         Vector2 moveVector = direction.normalized * speed * Time.fixedDeltaTime;
 
         rigid.MovePosition(rigid.position + moveVector);
+    }
+    private void RemoveVelocity()
+    {
         rigid.velocity = Vector2.zero;
     }
-
     private void CheckFlip()
     {
         spriteRenderer.flipX = target.position.x < rigid.position.x;
     }
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D _collision)
     {
-        if (!collision.CompareTag(StringData.TagWeapon))
+        if (!_collision.CompareTag(StringData.TagWeapon))
             return;
 
-        hp -= collision.GetComponent<Weapon>().damage;
+        Hit(_collision);
+    }
+
+    private void Hit(Collider2D _collision)
+    {
+        hp -= _collision.GetComponent<Weapon>().damage;
 
         StartCoroutine(KnockBack());
 
@@ -98,25 +113,30 @@ public class Monster : MonoBehaviour
             Dead();
         }
     }
-
     private IEnumerator KnockBack()
     {
         yield return waitTime;
         Vector3 charPos = GameManager.instance.character.transform.position;
-        Vector3 direction = transform.position - charPos;
-        rigid.AddForce(direction.normalized * knockbackPower, ForceMode2D.Impulse);
+        Vector3 direction = (transform.position - charPos).normalized;
+        rigid.AddForce(direction * knockbackPower, ForceMode2D.Impulse);
     }
     private void Dead()
     {
         isLive = false;
-        collider.enabled = isLive;
+        collision.enabled = isLive;
         rigid.simulated = isLive;
-        spriteRenderer.sortingOrder = 1;
+        ChangeSortingOrder();
         animator.SetBool(StringData.AnimationDead, !isLive);
+        GameManager.instance.GetCoin(rewardCoin);
+        GameManager.instance.character.GetExp(rewardExp);
     }
-
+    private void ChangeSortingOrder()
+    {
+        spriteRenderer.sortingOrder = isLive ? 2 : 1;
+    }
     private void ActiveFalse()
     {
         this.gameObject.SetActive(false);
+
     }
 }
