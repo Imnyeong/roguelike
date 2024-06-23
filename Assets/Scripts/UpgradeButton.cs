@@ -3,7 +3,6 @@ using UnityEngine.UI;
 
 public class UpgradeButton : MonoBehaviour
 {
-    private WeaponData data;
     private Button btn;
 
     [SerializeField] private Image icon;
@@ -14,10 +13,6 @@ public class UpgradeButton : MonoBehaviour
     private void Awake()
     {
         Init();
-    }
-    private void OnEnable()
-    {
-        SetData();
     }
     private void OnDisable()
     {
@@ -31,16 +26,46 @@ public class UpgradeButton : MonoBehaviour
     }
     private void ClearData()
     {
-        data = null;
         btn.onClick.RemoveAllListeners();
     }
-    private void SetData()
+    public void SetData(UpgradeData _data)
     {
-        btn.onClick.AddListener(OnClickButton);
-    }
-    private void OnClickButton()
-    {
-        GameManager.instance.character.weapon.UpgradeWeapon(1,1);
-        UIManager.instance.HideUpgrade();
+        switch (_data.upgradeType)
+        {
+            case UpgradeType.Hp:
+                {
+                    btn.onClick.AddListener(delegate { GameManager.instance.character.UpgradeStatus(1, 0); });
+                    desc.text = StringData.Hp;
+                    break;
+                }
+            case UpgradeType.Speed:
+                {
+                    btn.onClick.AddListener(delegate { GameManager.instance.character.UpgradeStatus(0, 1); });
+                    desc.text = StringData.Speed;
+                    break;
+                }
+            case UpgradeType.Damage:
+                {
+                    btn.onClick.AddListener(delegate { GameManager.instance.character.weapon.UpgradeWeapon(1, 0, 0); });
+                    desc.text = StringData.Damaga;
+                    break;
+                }
+            case UpgradeType.Delay:
+                {
+                    btn.onClick.AddListener(delegate { GameManager.instance.character.weapon.UpgradeWeapon(0, 1, 0); });
+                    desc.text = StringData.Delay;
+                    break;
+                }
+            case UpgradeType.Count:
+                {
+                    btn.onClick.AddListener(delegate { GameManager.instance.character.weapon.UpgradeWeapon(0, 0, 1); });
+                    desc.text = StringData.Count;
+                    break;
+                }
+        }
+        btn.onClick.AddListener(delegate 
+        {
+            UIManager.instance.HideUpgrade();
+        });
     }
 }

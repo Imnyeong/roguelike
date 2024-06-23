@@ -112,9 +112,10 @@ public class WeaponSpawner : MonoBehaviour
         bullet.rotation = Quaternion.FromToRotation(Vector3.up, direction);
         bullet.GetComponent<Weapon>().SetWeapon(damage, weaponType, direction, count, speed);
     }
-    public void UpgradeWeapon(float _damage, int _count)
+    public void UpgradeWeapon(float _damage, float _speed, int _count)
     {
         damage += _damage;
+        speed += _speed;
         count += _count;
 
         if(weaponType == WeaponType.Spin)

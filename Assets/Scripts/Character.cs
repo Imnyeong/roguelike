@@ -40,7 +40,6 @@ public class Character : MonoBehaviour
         ChaeckAnimation();
     }
     #endregion
-
     private void Init()
     {
         rigid = GetComponent<Rigidbody2D>();
@@ -51,7 +50,7 @@ public class Character : MonoBehaviour
     }
     public void SetData(int _characterId)
     {
-        CharacterData _data = Resources.LoadAll<CharacterData>(StringData.pathCharacterData)[_characterId];
+        CharacterData _data = LocalDataBase.instance.characterDatas[_characterId];
         characterId = _characterId;
         maxHp = _data.maxHp;
         speed = _data.speed;
@@ -65,7 +64,7 @@ public class Character : MonoBehaviour
     {
         GameObject go = Instantiate(new GameObject(), this.transform);
         weapon = go.AddComponent<WeaponSpawner>();
-        weapon.SetData(Resources.LoadAll<WeaponData>(StringData.pathWeaponData)[_weaponId]);
+        weapon.SetData(LocalDataBase.instance.weaponDatas[_weaponId]);
     }
     private void CheckInput()
     {
@@ -117,7 +116,6 @@ public class Character : MonoBehaviour
     {
         return exp / maxExp;
     }
-
     private void OnCollisionStay2D(Collision2D _collision)
     {
         if (!canHit)
@@ -125,11 +123,11 @@ public class Character : MonoBehaviour
 
         Hit(_collision.gameObject.GetComponent<Monster>().damage);
     }
-
     private void Hit(int _damage)
     {
         hp -= _damage;
         UIManager.instance.UpdateHp();
+        
         StartCoroutine(HitCoroutine());
 
         if (hp > 0)
@@ -141,7 +139,6 @@ public class Character : MonoBehaviour
             Dead();
         }
     }
-
     private IEnumerator HitCoroutine()
     {
         canHit = false;
@@ -156,5 +153,10 @@ public class Character : MonoBehaviour
     {
         GameManager.instance.StopGame();
     }
-
+    public void UpgradeStatus(float _hp, float _speed)
+    {
+        maxHp += _hp;
+        hp += _hp;
+        speed += _speed;
+    }
 }
