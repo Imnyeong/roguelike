@@ -35,7 +35,9 @@ public enum UpgradeType
 public class UpgradeData
 {
     public UpgradeType upgradeType;
+    public int tier;
     public int weight;
     public string name;
     public string desc;
+    public float value;
 }

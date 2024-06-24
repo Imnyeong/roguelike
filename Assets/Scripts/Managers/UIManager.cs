@@ -11,7 +11,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Slider hpSlider;
 
     [SerializeField] private GameObject UpgradeUI;
-
+    private const float minute = 60;
     #region Unity Life Cycle
     private void Awake()
     {
@@ -20,9 +20,16 @@ public class UIManager : MonoBehaviour
             instance = this;
         }
     }
+    public void FixedUpdate()
+    {
+        UpdateTmier();
+    }
     #endregion
     public void UpdateCoin() => coinText.text = GameManager.instance.coin.ToString();
-    public void UpdateTmier() => timerText.text = GameManager.instance.timer.ToString("F0");
+    public void UpdateTmier()
+    {
+        timerText.text = $"{((int)(GameManager.instance.timer / minute)).ToString("D2")}:{((int)(GameManager.instance.timer % minute)).ToString("D2")}";
+    }
     public void UpdateHp() => hpSlider.value = GameManager.instance.character.GetCurrentHp();
     public void UpdateExp() => expSlider.value = GameManager.instance.character.GetCurrentExp();
     public void ShowUpgrade()

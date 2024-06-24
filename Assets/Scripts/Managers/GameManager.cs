@@ -26,6 +26,10 @@ public class GameManager : MonoBehaviour
         character.SetData(characterId);
         PlayGame();
     }
+    private void FixedUpdate()
+    {
+        Timer();
+    }
     #endregion
     #region Coin
     public void GetCoin(int _value)
@@ -41,5 +45,9 @@ public class GameManager : MonoBehaviour
     public void StopGame()
     {
         Time.timeScale = 0.0f;
+    }
+    public void Timer()
+    {
+        timer += Time.fixedDeltaTime;
     }
 }

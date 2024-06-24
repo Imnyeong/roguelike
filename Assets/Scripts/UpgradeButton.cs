@@ -25,32 +25,33 @@ public class UpgradeButton : MonoBehaviour
     {
         upgradeName.text = _data.name;
         upgradeDesc.text = _data.desc;
+        outline.sprite = outlines[_data.tier];
 
         switch (_data.upgradeType)
         {
             case UpgradeType.Hp:
                 {
-                    btn.onClick.AddListener(delegate { GameManager.instance.character.UpgradeStatus(10, 0); });
+                    btn.onClick.AddListener(delegate { GameManager.instance.character.UpgradeStatus(_data.value, 0); });
                     break;
                 }
             case UpgradeType.Speed:
                 {
-                    btn.onClick.AddListener(delegate { GameManager.instance.character.UpgradeStatus(0, 0.5f); });
+                    btn.onClick.AddListener(delegate { GameManager.instance.character.UpgradeStatus(0, _data.value); });
                     break;
                 }
             case UpgradeType.Damage:
                 {
-                    btn.onClick.AddListener(delegate { GameManager.instance.character.weapon.UpgradeWeapon(10, 0, 0); });
+                    btn.onClick.AddListener(delegate { GameManager.instance.character.weapon.UpgradeWeapon(_data.value, 0, 0); });
                     break;
                 }
             case UpgradeType.Delay:
                 {
-                    btn.onClick.AddListener(delegate { GameManager.instance.character.weapon.UpgradeWeapon(0, 10, 0); });
+                    btn.onClick.AddListener(delegate { GameManager.instance.character.weapon.UpgradeWeapon(0, _data.value, 0); });
                     break;
                 }
             case UpgradeType.Count:
                 {
-                    btn.onClick.AddListener(delegate { GameManager.instance.character.weapon.UpgradeWeapon(0, 0, 1); });
+                    btn.onClick.AddListener(delegate { GameManager.instance.character.weapon.UpgradeWeapon(0, 0, (int)_data.value); });
                     break;
                 }
         }
@@ -58,26 +59,5 @@ public class UpgradeButton : MonoBehaviour
         {
             UIManager.instance.HideUpgrade();
         });
-
-        switch (_data.upgradeType)
-        {
-            case UpgradeType.Hp:
-            case UpgradeType.Speed:
-                {
-                    outline.sprite = outlines[0];
-                    break;
-                }
-            case UpgradeType.Damage:
-            case UpgradeType.Delay:
-                {
-                    outline.sprite = outlines[1];
-                    break;
-                }
-            case UpgradeType.Count:
-                {
-                    outline.sprite = outlines[2];
-                    break;
-                }
-        }
     }
 }
