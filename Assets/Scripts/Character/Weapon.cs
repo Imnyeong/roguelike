@@ -5,7 +5,7 @@ public class Weapon : MonoBehaviour
     public float damage { get; private set; }
     public int penetrate { get; private set; }
     private WeaponType weaponType;
-    private float speed;
+    private float speed = 10f;
 
     private Rigidbody2D rigid;
     #region Unity Life Cycle
@@ -18,7 +18,7 @@ public class Weapon : MonoBehaviour
     {
         rigid = GetComponent<Rigidbody2D>();
     }
-    public void SetWeapon(float _damage, WeaponType _type, Vector2 _direction, int _penetrate = 0, float _speed = 0)
+    public void SetWeapon(float _damage, WeaponType _type, Vector2 _direction, int _penetrate = 0)
     {
         this.damage = _damage;
         this.penetrate = _penetrate;
@@ -26,7 +26,7 @@ public class Weapon : MonoBehaviour
 
         if (_type == WeaponType.Shoot)
         {
-            rigid.velocity = _direction * _speed;
+            rigid.velocity = _direction * speed;
         }
     }
     private void ActiveFalse()

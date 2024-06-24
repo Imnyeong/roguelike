@@ -17,3 +17,4 @@ MonoBehaviour:
   speed: 5
   sprite: {fileID: 2537882373423050008, guid: 43f559c4041d8d841aead2b25acb92ad, type: 3}
   animator: {fileID: 9100000, guid: bf50acd0e53d82444b50ed3d6dc0f9ab, type: 2}
+  defaultWeapon: 0

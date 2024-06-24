@@ -110,12 +110,12 @@ public class WeaponSpawner : MonoBehaviour
         Transform bullet = GameManager.instance.objectPool.GetWeapon(weaponId).transform;
         bullet.position = transform.position;
         bullet.rotation = Quaternion.FromToRotation(Vector3.up, direction);
-        bullet.GetComponent<Weapon>().SetWeapon(damage, weaponType, direction, count, speed);
+        bullet.GetComponent<Weapon>().SetWeapon(damage, weaponType, direction, count);
     }
     public void UpgradeWeapon(float _damage, float _speed, int _count)
     {
         damage += _damage;
-        if(weaponType == WeaponType.Shoot)
+        if(weaponType == WeaponType.Shoot && _speed != 0)
         {
             _speed = 1 / _speed;
         }

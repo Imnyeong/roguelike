@@ -17,6 +17,6 @@ MonoBehaviour:
   weaponName: "\uCD1D"
   weaponDesc: 
   weaponIcon: {fileID: 73727392, guid: a933fc8f2fd7a11489e22d5cb0add56d, type: 3}
-  damage: 5
+  damage: 20
   count: 1
-  speed: 1
+  speed: 1.5
