@@ -3,63 +3,54 @@ using UnityEngine.UI;
 
 public class UpgradeButton : MonoBehaviour
 {
-    private Button btn;
+    [SerializeField] private Button btn;
+    [SerializeField] private Text upgradeName;
+    [SerializeField] private Text upgradeDesc;
+    [SerializeField] private Image outline;
 
-    [SerializeField] private Image icon;
-    [SerializeField] private Text desc;
-    [SerializeField] private Text coin;
+    [SerializeField] Sprite[] outlines;
 
     #region Unity Life Cycle
-    private void Awake()
-    {
-        Init();
-    }
     private void OnDisable()
     {
         ClearData();
     }
     #endregion
 
-    private void Init()
-    {
-        btn = GetComponent<Button>();
-    }
     private void ClearData()
     {
         btn.onClick.RemoveAllListeners();
     }
     public void SetData(UpgradeData _data)
     {
+        upgradeName.text = _data.name;
+        upgradeDesc.text = _data.desc;
+
         switch (_data.upgradeType)
         {
             case UpgradeType.Hp:
                 {
-                    btn.onClick.AddListener(delegate { GameManager.instance.character.UpgradeStatus(1, 0); });
-                    desc.text = StringData.Hp;
+                    btn.onClick.AddListener(delegate { GameManager.instance.character.UpgradeStatus(10, 0); });
                     break;
                 }
             case UpgradeType.Speed:
                 {
-                    btn.onClick.AddListener(delegate { GameManager.instance.character.UpgradeStatus(0, 1); });
-                    desc.text = StringData.Speed;
+                    btn.onClick.AddListener(delegate { GameManager.instance.character.UpgradeStatus(0, 0.5f); });
                     break;
                 }
             case UpgradeType.Damage:
                 {
-                    btn.onClick.AddListener(delegate { GameManager.instance.character.weapon.UpgradeWeapon(1, 0, 0); });
-                    desc.text = StringData.Damaga;
+                    btn.onClick.AddListener(delegate { GameManager.instance.character.weapon.UpgradeWeapon(10, 0, 0); });
                     break;
                 }
             case UpgradeType.Delay:
                 {
-                    btn.onClick.AddListener(delegate { GameManager.instance.character.weapon.UpgradeWeapon(0, 1, 0); });
-                    desc.text = StringData.Delay;
+                    btn.onClick.AddListener(delegate { GameManager.instance.character.weapon.UpgradeWeapon(0, 10, 0); });
                     break;
                 }
             case UpgradeType.Count:
                 {
                     btn.onClick.AddListener(delegate { GameManager.instance.character.weapon.UpgradeWeapon(0, 0, 1); });
-                    desc.text = StringData.Count;
                     break;
                 }
         }
@@ -67,5 +58,26 @@ public class UpgradeButton : MonoBehaviour
         {
             UIManager.instance.HideUpgrade();
         });
+
+        switch (_data.upgradeType)
+        {
+            case UpgradeType.Hp:
+            case UpgradeType.Speed:
+                {
+                    outline.sprite = outlines[0];
+                    break;
+                }
+            case UpgradeType.Damage:
+            case UpgradeType.Delay:
+                {
+                    outline.sprite = outlines[1];
+                    break;
+                }
+            case UpgradeType.Count:
+                {
+                    outline.sprite = outlines[2];
+                    break;
+                }
+        }
     }
 }

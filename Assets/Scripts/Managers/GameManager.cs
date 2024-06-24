@@ -5,10 +5,11 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
+    public int characterId;
+
     public Character character;
     public ObejctPool objectPool;
 
-    public int characterId;
     public int coin { get; private set; }
     public float timer { get; private set; }
 

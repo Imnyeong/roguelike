@@ -115,6 +115,10 @@ public class WeaponSpawner : MonoBehaviour
     public void UpgradeWeapon(float _damage, float _speed, int _count)
     {
         damage += _damage;
+        if(weaponType == WeaponType.Shoot)
+        {
+            _speed = 1 / _speed;
+        }
         speed += _speed;
         count += _count;
 
