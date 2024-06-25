@@ -14,7 +14,7 @@ public class Character : MonoBehaviour
     private float maxExp;
 
     private bool canHit = true;
-    private WaitForSecondsRealtime hitTime;
+    private WaitForSecondsRealtime hitTime = new WaitForSecondsRealtime(2.0f);
     public Rigidbody2D rigid { get; private set; }
     private SpriteRenderer spriteRenderer;
     private Animator animator;
@@ -25,10 +25,6 @@ public class Character : MonoBehaviour
     private void Awake()
     {
         Init();
-    }
-    private void Update()
-    {
-        CheckInput();
     }
     private void FixedUpdate()
     {
@@ -46,7 +42,6 @@ public class Character : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
         tracker = GetComponent<TargetTracker>();
-        hitTime = new WaitForSecondsRealtime(2.0f);
     }
     public void SetData(int _characterId)
     {
@@ -65,11 +60,6 @@ public class Character : MonoBehaviour
         GameObject go = Instantiate(new GameObject(), this.transform);
         weapon = go.AddComponent<WeaponSpawner>();
         weapon.SetData(LocalDataBase.instance.weaponDatas[_weaponId]);
-    }
-    private void CheckInput()
-    {
-        inputVector.x = Input.GetAxisRaw("Horizontal");
-        inputVector.y = Input.GetAxisRaw("Vertical");
     }
     private void CheckFlip()
     {
