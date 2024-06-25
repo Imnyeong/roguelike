@@ -108,7 +108,7 @@ public class Character : MonoBehaviour
     }
     private void OnCollisionStay2D(Collision2D _collision)
     {
-        if (!canHit)
+        if (!canHit || _collision.gameObject.tag != StringData.TagMonster)
             return;
 
         Hit(_collision.gameObject.GetComponent<Monster>().damage);
@@ -117,12 +117,12 @@ public class Character : MonoBehaviour
     {
         hp -= _damage;
         UIManager.instance.UpdateHp();
-        
-        StartCoroutine(HitCoroutine());
+        canHit = false;
 
         if (hp > 0)
         {
             animator.SetTrigger(StringData.AnimationHit);
+            StartCoroutine(HitCoroutine());
         }
         else
         {
@@ -131,7 +131,6 @@ public class Character : MonoBehaviour
     }
     private IEnumerator HitCoroutine()
     {
-        canHit = false;
         yield return hitTime;
         canHit = true;
     }

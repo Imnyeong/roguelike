@@ -7,6 +7,7 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] private Text timerText;
     [SerializeField] private Text coinText;
+    [SerializeField] private Text stageText;
     [SerializeField] private Slider expSlider;
     [SerializeField] private Slider hpSlider;
 
@@ -30,6 +31,8 @@ public class UIManager : MonoBehaviour
     {
         timerText.text = $"{((int)(GameManager.instance.timer / minute)).ToString("D2")}:{((int)(GameManager.instance.timer % minute)).ToString("D2")}";
     }
+    public void UpdateStage() => stageText.text = $"Stage {GameManager.instance.stage}\n Kill Count {GameManager.instance.killCount} / {GameManager.instance.stage * GameManager.instance.needCount}";
+
     public void UpdateHp() => hpSlider.value = GameManager.instance.character.GetCurrentHp();
     public void UpdateExp() => expSlider.value = GameManager.instance.character.GetCurrentExp();
     public void ShowUpgrade()

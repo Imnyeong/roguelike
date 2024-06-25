@@ -12,16 +12,15 @@ public class Monster : MonoBehaviour
     private int rewardCoin;
 
     private bool isLive = false;
+
     [SerializeField] private RuntimeAnimatorController[] animators;
     private Rigidbody2D rigid;
-    private SpriteRenderer spriteRenderer;
+    [SerializeField] private SpriteRenderer spriteRenderer;
 
     private Animator animator;
     private Rigidbody2D target;
     private Collider2D collision;
 
-    private WaitForFixedUpdate waitTime;
-    private const float knockbackPower = 0.5f;
     #region Unity Life Cycle
     private void Awake()
     {
@@ -54,7 +53,6 @@ public class Monster : MonoBehaviour
         collision = GetComponent<Collider2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
-        waitTime = new WaitForFixedUpdate();
     }
     private void SetStatus()
     {
@@ -105,8 +103,6 @@ public class Monster : MonoBehaviour
     {
         hp -= _collision.GetComponent<Weapon>().damage;
 
-        StartCoroutine(KnockBack());
-
         if (hp > 0)
         {
             animator.SetTrigger(StringData.AnimationHit);
@@ -116,13 +112,6 @@ public class Monster : MonoBehaviour
             Dead();
         }
     }
-    private IEnumerator KnockBack()
-    {
-        yield return waitTime;
-        Vector3 charPos = GameManager.instance.character.transform.position;
-        Vector3 direction = (transform.position - charPos).normalized;
-        rigid.AddForce(direction * knockbackPower, ForceMode2D.Impulse);
-    }
     private void Dead()
     {
         isLive = false;
@@ -130,6 +119,8 @@ public class Monster : MonoBehaviour
         rigid.simulated = isLive;
         ChangeSortingOrder();
         animator.SetBool(StringData.AnimationDead, !isLive);
+
+        GameManager.instance.KillMonster();
         GameManager.instance.GetCoin(rewardCoin);
         GameManager.instance.character.GetExp(rewardExp);
     }
