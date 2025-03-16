@@ -18,7 +18,8 @@
 
 ### 자동 추적 로직
 ```ruby
-RaycastHit2D[] targets = Physics2D.CircleCastAll(transform.position, trackRange, Vector2.zero, 0, targetLayer);
+RaycastHit2D[] targets =
+Physics2D.CircleCastAll(transform.position, trackRange, Vector2.zero, 0, targetLayer);
 
 Transform target = null;
 float minDistance = float.MaxValue;
